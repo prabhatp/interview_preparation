@@ -154,3 +154,55 @@ success
 error
 Error caught
 */
+
+// 7.
+function job(state) {
+    return new Promise(function(resolve, reject){
+        if (state) {
+            resolve("success");
+        } else {
+            reject("error");
+        }
+        
+    });
+}
+
+let promise = job(true);
+
+promise.then(function(data){
+    console.log(data);
+    return job(true);
+}).then(function(data) {
+    if (data !== 'victory') {
+        throw "Defeat"; // this is rejected promise
+    }
+    return job(true);
+}).then(function(data) {
+    console.log(data);
+}).catch(function(error) {
+    console.log(error);
+    return job(false);
+}).then(function(data) {
+    console.log(data);
+    return job(true);
+}).catch(function(error) {
+    console.log(error);
+    return "Error caught"; // this is not the rejected promise, its just for confused
+}).then(function(data) {
+    console.log(data);
+    return new Error("test");  // this is not the rejected promise, its just for confused
+}).then(function(data) {
+    console.log('Success:', data.message);
+}).catch(function(data) {
+    console.log("Error", data.message);
+})
+
+/*
+Output:
+success
+Defeat
+error
+Error caught
+Success test
+
+*/
