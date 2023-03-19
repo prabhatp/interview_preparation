@@ -203,6 +203,93 @@ success
 Defeat
 error
 Error caught
-Success test
-
+Success: test
 */
+
+// 8.
+
+const firstPromise = new Promise((resolve, reject) => {
+    resolve("First!");
+});
+
+const secondPromise = new Promise((resolve, reject) => {
+    resolve(firstPromise);
+});
+
+secondPromise.then(res => {
+    return res;
+}).then(res => console.log(res));
+
+/**
+ * Output:
+ * First!
+ */
+
+//Question 9: Rewrite this example code using 'async/await' instead of 'then/catch'
+function loadJson(url) {
+    return fetch(url)
+        .then((response) => {
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                throw new Error(response.status);
+            }
+        });
+}
+
+loadJson('https://fakeurl.com/no-such-user.json').catch(err => console.log(err));
+
+async function loadJson(url) {
+    let response = await fetch(url);
+    if (response.status == 200) {
+        return await response.json();
+    } 
+    return new Error(response.status);
+}
+
+await loadJson('https://fakeurl.com/no-such-user.json').catch(err => console.log(err));
+
+// Question 10: Solve Promise Recursively.
+function importantAction(username) {
+    return new Promise((resolve, reject) => {
+        setTimeout(function() {
+            resolve(`Subscribe to ${username}`);
+        }, 1000);
+    })
+}
+
+function likeTheVideo(video) {
+    return new Promise((resolve, reject) => {
+        setTimeout(function() {
+            resolve(`Like the ${video} video`);
+        }, 1000);
+    })
+}
+
+
+function shareTheVideo(video) {
+    return new Promise((resolve, reject) => {
+        setTimeout(function() {
+            resolve(`Share the ${video} video`);
+        }, 1000);
+    })
+}
+
+function promiseRecursive(funcPromises) {
+    // Write Implementation Here
+    if (funcPromises.length == 0) return;
+    const currPromise = funcPromises.shift();
+    currPromise.then((res) => {
+        console.log(res);
+    }).catch((error) => {
+        console.log(error);
+    })
+
+    promiseRecursive(funcPromises);
+}
+
+promiseRecursive([
+    importantAction("Roadside Coder"),
+    likeTheVideo("Javascript Interview Question"),
+    shareTheVideo("Javascript Interview Questions")
+]);
